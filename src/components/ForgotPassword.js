@@ -1,26 +1,27 @@
 import React, { useRef, useState } from 'react'
 import { Alert, Button, Card, Form } from 'react-bootstrap'
-import { Link, useHistory } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 
 export default function ForgotPassword() {
 
     const emailRef = useRef()
-    const { login } = useAuth()
+    const { resetPassword } = useAuth()
     const [error, setError] = useState('')
+    const [message, setMessage] = useState('')
     const [loading, setLoading] = useState(false)
-    const history = useHistory();
 
     async function handleLogin(e) {
         e.preventDefault()
 
         try {
+            setMessage("")
             setError("")
             setLoading(true)
-            await login(emailRef.current.value)
-            history.push('/')
+            await resetPassword(emailRef.current.value)
+            setMessage("Check your inbox for furthur instructions ")
         } catch {
-            setError(' Failed to log in')
+            setError('Failed to reset password')
         }
 
         setLoading(false)
@@ -33,6 +34,7 @@ export default function ForgotPassword() {
                     <h2 className="text-center mb-4">Reset Password</h2>
 
                     {error && <Alert variant='danger'>{error}</Alert>}
+                    {message && <Alert variant='success'>{message}</Alert>}
 
                     <Form onSubmit={handleLogin}>
                         <Form.Group id="email">
